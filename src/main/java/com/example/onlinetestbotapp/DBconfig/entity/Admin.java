@@ -13,12 +13,10 @@ import javax.persistence.Entity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "users")
-public class User extends AbsEntityId {
+@Entity
+public class Admin extends AbsEntityId {
 
     private String fullName;
-
-    private String userName;
 
     private String state;
 
@@ -27,6 +25,5 @@ public class User extends AbsEntityId {
     @Column(unique = true)
     private Long chatId;
 
-    private String resultTest;
-
+    private String password;
 }

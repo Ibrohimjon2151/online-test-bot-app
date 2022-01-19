@@ -1,6 +1,8 @@
 package com.example.onlinetestbotapp.DBconfig.DBservice;
 
+import com.example.onlinetestbotapp.DBconfig.entity.Admin;
 import com.example.onlinetestbotapp.DBconfig.entity.User;
+import com.example.onlinetestbotapp.DBconfig.repository.AdminRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.UserRepository;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -55,5 +57,32 @@ public class UserService  {
         user.setUserName(userName);
         user.setChatId(update.getMessage().getChatId());
         userRepository.save(user);
+    }
+
+    public void updateState(Update update, String  state ,   UserRepository userRepository){
+        Long chatId = 0L;
+        if (update.hasCallbackQuery()) {
+             chatId = update.getCallbackQuery().getMessage().getChatId();
+        }else {
+            chatId = update.getMessage().getChatId();
+        }
+        Optional<User> optionalUser = userRepository.findByChatId(chatId);
+        User user = optionalUser.get();
+        user.setState(state);
+        userRepository.save(user);
+    }
+
+
+    public void updateStateAdmin(Update update, String  state ,   AdminRepository adminRepository){
+        Long chatId = 0L;
+        if (update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+        }else {
+            chatId = update.getMessage().getChatId();
+        }
+        Optional<Admin> optionalUser = adminRepository.findByChatId(chatId);
+        Admin user = optionalUser.get();
+        user.setState(state);
+        adminRepository.save(user);
     }
 }

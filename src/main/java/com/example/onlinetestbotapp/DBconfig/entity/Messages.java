@@ -6,27 +6,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "users")
-public class User extends AbsEntityId {
+@Entity
+public class Messages extends AbsEntityId {
+    private String title;
 
-    private String fullName;
-
-    private String userName;
-
-    private String state;
-
-    private String phoneNumber;
-
-    @Column(unique = true)
-    private Long chatId;
-
-    private String resultTest;
-
+    private String description;
 }

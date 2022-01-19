@@ -1,8 +1,11 @@
 package com.example.onlinetestbotapp;
 
 import com.example.onlinetestbotapp.DBconfig.DBservice.UserService;
+import com.example.onlinetestbotapp.DBconfig.entity.Admin;
+import com.example.onlinetestbotapp.DBconfig.repository.AdminRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.UserRepository;
 import com.example.onlinetestbotapp.bot.BotService.SendServiceMessageImp;
+import com.example.onlinetestbotapp.bot.constants.AdminState;
 import com.example.onlinetestbotapp.bot.constants.BotState;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class BotService extends TelegramLongPollingBot {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AdminRepository adminRepository;
+
 
     @SneakyThrows
     @Override
@@ -34,22 +40,25 @@ public class BotService extends TelegramLongPollingBot {
         } else if (update.getMessage().hasContact()) {
             userService.saveUserWithContactPhoneNumber(update, BotState.MENU, userRepository);
             execute(sendServiceMessageImp.sendMenuPage(update));
-
         } else if (update.hasMessage()) {
-
             if (update.getMessage().getText().equals("/start")) {
                 boolean exists = userRepository.existsByChatId(update.getMessage().getChatId());
-                if (exists) {
+                if (!exists) {
                     execute(sendServiceMessageImp.WelcomeToBot(update));
                     userService.saveUserWithChatId(update, BotState.START, userRepository);
                     return;
+                } else {
+                    userService.updateState(update, BotState.MENU, userRepository);
+                    execute(sendServiceMessageImp.sendMenuPage(update));
                 }
-                userService.saveUserOfPhoneNumber(update, BotState.MENU, userRepository);
-                execute(sendServiceMessageImp.sendMenuPage(update));
             }
 
             Long chatId = update.getMessage().getChatId();
             String state = userRepository.findByChatId(chatId).get().getState();
+            /**
+             *
+             * USER UCHUN STATE BO'YICHA HABAR CHO'NATISH
+             */
             switch (state) {
                 case BotState.START:
                     userService.saveUserFullName(update, BotState.GETPHONENUMBER, userRepository);
@@ -62,6 +71,28 @@ public class BotService extends TelegramLongPollingBot {
             }
 
 
+            /**
+             *
+             * ADMIN UCHUN STATE BO'YICHA HABAR CHO'NATISH
+             */
+            for (Admin admin : adminRepository.findAll()) {
+                if (admin.getPassword().equals(update.getMessage().getText())) {
+                    userService.updateStateAdmin(update, AdminState.ENTERADMIN, adminRepository);
+                }
+            }
+
+            String stateAdmin = adminRepository.findByChatId(update.getMessage().getChatId()).get().getState();
+            switch (stateAdmin) {
+                case AdminState.ENTERADMIN:
+
+                    break;
+            }
+
+
+            /**
+             *
+             * TEXT HABAR BO'YICHA HABAR CHO'NATISH
+             */
             String message = update.getMessage().getText();
             switch (message) {
                 case "start":

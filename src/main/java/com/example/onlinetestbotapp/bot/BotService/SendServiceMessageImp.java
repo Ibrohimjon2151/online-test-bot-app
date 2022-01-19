@@ -1,9 +1,12 @@
 package com.example.onlinetestbotapp.bot.BotService;
 
 import com.example.onlinetestbotapp.bot.ServiceInterface.SendServiceMessage;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -37,6 +40,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
 
     }
 
+
     /**
      * USERDAN TELFON RAQAMINI OLISH UCHUN SO'ROV
      * @param update
@@ -51,7 +55,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
         sendMessage.setChatId(String.valueOf(chatId));
         sendMessage.enableHtml(true);
 
-        stringBuilder.append("Telegram telfon raqamini jo'nating \uD83D\uDC47 yoki");
+        stringBuilder.append("Telegram telfon raqamini jo'nating \uD83D\uDC47 yoki ");
 
         stringBuilder.append("o'zingiz kiriting misol uchun \uD83D\uDC49 <i>+998909876543</i>");
         sendMessage.setText(String.valueOf(stringBuilder));
@@ -96,5 +100,28 @@ public class SendServiceMessageImp implements SendServiceMessage {
         sendMessage.setText("Hali nima yozishni bilmadim \uD83E\uDD37\u200D♂️\n@"+userName);
         return sendMessage;
     }
+
+//    public InlineKeyboardMarkup makeInlineKeyboardButton(String[] array) {
+//        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+//        List<InlineKeyboardButton> row = new ArrayList<>();
+//        List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
+//        for (int i = 0; i < array.length; i++) {
+//            if (i % 2 == 1) {
+//
+//                row = getInlineKeyboardButtons(array, row, rowlist, i);
+//            } else if (array.length - 1 == i) {
+//                row = getInlineKeyboardButtons(array, row, rowlist, i);
+//            } else {
+//                InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+//
+//                inlineKeyboardButton.setText(array[i]);
+//                inlineKeyboardButton.setCallbackData(array[i]);
+//
+//                row.add(inlineKeyboardButton);
+//            }
+//        }
+//        inlineKeyboardMarkup.setKeyboard(rowlist);
+//        return inlineKeyboardMarkup;
+//    }
 }
 
