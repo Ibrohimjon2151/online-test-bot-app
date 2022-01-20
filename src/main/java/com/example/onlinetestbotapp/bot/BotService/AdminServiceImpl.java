@@ -12,6 +12,7 @@ public class AdminServiceImpl implements AdminService {
         sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         sendMessage.setText("Assalomu alaykum admin paneliga hush kelibsiz quydagilardan birini tanlashingiz mumkin");
 
+        SendServiceMessageImp.makeInlineKeyboardButton()
         return sendMessage;
     }
 }

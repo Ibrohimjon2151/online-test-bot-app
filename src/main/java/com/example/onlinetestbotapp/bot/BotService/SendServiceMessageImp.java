@@ -101,27 +101,47 @@ public class SendServiceMessageImp implements SendServiceMessage {
         return sendMessage;
     }
 
-//    public InlineKeyboardMarkup makeInlineKeyboardButton(String[] array) {
-//        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-//        List<InlineKeyboardButton> row = new ArrayList<>();
-//        List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
-//        for (int i = 0; i < array.length; i++) {
-//            if (i % 2 == 1) {
-//
-//                row = getInlineKeyboardButtons(array, row, rowlist, i);
-//            } else if (array.length - 1 == i) {
-//                row = getInlineKeyboardButtons(array, row, rowlist, i);
-//            } else {
-//                InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-//
-//                inlineKeyboardButton.setText(array[i]);
-//                inlineKeyboardButton.setCallbackData(array[i]);
-//
-//                row.add(inlineKeyboardButton);
-//            }
-//        }
-//        inlineKeyboardMarkup.setKeyboard(rowlist);
-//        return inlineKeyboardMarkup;
-//    }
+    /**
+     * INLINE BUTTON YASASH
+     * @param array
+     * @return
+     */
+    public static InlineKeyboardMarkup makeInlineKeyboardButton(String[] array) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            if (i % 2 == 1) {
+
+                row = getInlineKeyboardButtons(array, row, rowlist, i);
+            } else if (array.length - 1 == i) {
+                row = getInlineKeyboardButtons(array, row, rowlist, i);
+            } else {
+                InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+
+                inlineKeyboardButton.setText(array[i]);
+                inlineKeyboardButton.setCallbackData(array[i]);
+
+                row.add(inlineKeyboardButton);
+            }
+        }
+        inlineKeyboardMarkup.setKeyboard(rowlist);
+        return inlineKeyboardMarkup;
+    }
+    private static List<InlineKeyboardButton> getInlineKeyboardButtons(String[] array, List<InlineKeyboardButton> row, List<List<InlineKeyboardButton>> rowlist, int i) {
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+
+        inlineKeyboardButton.setText(array[i]);
+        inlineKeyboardButton.setCallbackData(array[i]);
+
+        row.add(inlineKeyboardButton);
+
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+
+        rowlist.add(row);
+        row = row2;
+        return row;
+    }
+
 }
 

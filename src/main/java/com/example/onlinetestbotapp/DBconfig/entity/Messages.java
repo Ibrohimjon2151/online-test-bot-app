@@ -17,4 +17,7 @@ public class Messages extends AbsEntityId {
     private String title;
 
     private String description;
+
+    boolean status = false;
+
 }
