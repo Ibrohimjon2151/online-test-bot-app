@@ -3,6 +3,7 @@ package com.example.onlinetestbotapp.bot.BotService;
 import com.example.onlinetestbotapp.bot.ServiceInterface.SendServiceMessage;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -17,6 +18,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
 
     /**
      * BOTGA KIRGANDA ISHLAYDI
+     *
      * @param update
      * @return
      */
@@ -43,6 +45,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
 
     /**
      * USERDAN TELFON RAQAMINI OLISH UCHUN SO'ROV
+     *
      * @param update
      * @return
      */
@@ -89,6 +92,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
 
     /**
      * MENU PAGENI JO'NATISH
+     *
      * @param update
      * @return
      */
@@ -97,12 +101,13 @@ public class SendServiceMessageImp implements SendServiceMessage {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         String userName = update.getMessage().getFrom().getUserName();
-        sendMessage.setText("Hali nima yozishni bilmadim \uD83E\uDD37\u200D♂️\n@"+userName);
+        sendMessage.setText("Hali nima yozishni bilmadim \uD83E\uDD37\u200D♂️\n@" + userName);
         return sendMessage;
     }
 
     /**
      * INLINE BUTTON YASASH
+     *
      * @param array
      * @return
      */
@@ -128,6 +133,36 @@ public class SendServiceMessageImp implements SendServiceMessage {
         inlineKeyboardMarkup.setKeyboard(rowlist);
         return inlineKeyboardMarkup;
     }
+
+    public static InlineKeyboardMarkup makeInlineKeyboardButtonOnerow(String[] array) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText(array[i]);
+            inlineKeyboardButton.setCallbackData(array[i]);
+            row.add(inlineKeyboardButton);
+        }
+        inlineKeyboardMarkup.setKeyboard(rowlist);
+        return inlineKeyboardMarkup;
+    }
+
+
+    @Override
+    public DeleteMessage deleteMessage(Update update) {
+        DeleteMessage deleteMessage = new DeleteMessage();
+        if (update.hasCallbackQuery()) {
+            deleteMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+            deleteMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+        } else {
+            deleteMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+            deleteMessage.setMessageId(update.getMessage().getMessageId());
+        }
+
+        return deleteMessage;
+    }
+
     private static List<InlineKeyboardButton> getInlineKeyboardButtons(String[] array, List<InlineKeyboardButton> row, List<List<InlineKeyboardButton>> rowlist, int i) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 

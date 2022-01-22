@@ -4,6 +4,7 @@ import com.example.onlinetestbotapp.DBconfig.DBservice.UserService;
 import com.example.onlinetestbotapp.DBconfig.entity.Admin;
 import com.example.onlinetestbotapp.DBconfig.repository.AdminRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.UserRepository;
+import com.example.onlinetestbotapp.bot.BotService.AdminServiceImpl;
 import com.example.onlinetestbotapp.bot.BotService.SendServiceMessageImp;
 import com.example.onlinetestbotapp.bot.constants.AdminState;
 import com.example.onlinetestbotapp.bot.constants.BotState;
@@ -29,6 +30,8 @@ public class BotService extends TelegramLongPollingBot {
     @Autowired
     AdminRepository adminRepository;
 
+    @Autowired
+    AdminServiceImpl adminService;
 
     @SneakyThrows
     @Override
@@ -84,7 +87,9 @@ public class BotService extends TelegramLongPollingBot {
             String stateAdmin = adminRepository.findByChatId(update.getMessage().getChatId()).get().getState();
             switch (stateAdmin) {
                 case AdminState.ENTERADMIN:
-
+                    execute(sendServiceMessageImp.deleteMessage(update));
+                    userService.updateStateAdmin(update , AdminState.ADMINPANEL, adminRepository);
+                    execute(adminService.sendAdminPanel(update));
                     break;
             }
 
