@@ -17,7 +17,7 @@ public class MessageService {
             messages.setDescription(update.getMessage().getText());
             messagesRepository.save(messages);
         }else {
-            Messages messages = optionalMessages.get();
+            Messages messages = new Messages();
             messages.setTitle(mainmenu);
             messages.setDescription(update.getMessage().getText());
             messages.setStatus(true);

@@ -1,6 +1,8 @@
 package com.example.onlinetestbotapp.bot.BotService;
 
+import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.bot.ServiceInterface.SendServiceMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,8 +16,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class SendServiceMessageImp implements SendServiceMessage {
+
+    @Autowired
+    MessagesRepository messagesRepository;
 
     /**
      * BOTGA KIRGANDA ISHLAYDI
@@ -100,9 +106,14 @@ public class SendServiceMessageImp implements SendServiceMessage {
     @Override
     public SendMessage sendMenuPage(Update update) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
-        String userName = update.getMessage().getFrom().getUserName();
-        sendMessage.setText("Hali nima yozishni bilmadim \uD83E\uDD37\u200D♂️\n@" + userName);
+        if (update.hasCallbackQuery()) {
+            sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+        } else {
+            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+        }
+
+//        messagesRepository.findByTitleAndStatus()
+//        sendMessage.setText();
         return sendMessage;
     }
 
@@ -137,7 +148,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
 
     public static InlineKeyboardMarkup makeInlineKeyboardButtonOnerow(String[] array) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
+        List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
         for (int i = 0; i < array.length; i++) {
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();

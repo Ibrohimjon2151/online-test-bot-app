@@ -129,7 +129,8 @@ public class BotService extends TelegramLongPollingBot {
                     execute(adminService.sendAdminPanel(update));
                     break;
                 case AdminState.CHANGEMENUSTATUS:
-                        messageService.saveNewMessage(MessageConstanta.MAINMENU,update , messagesRepository);
+                    messageService.saveNewMessage(MessageConstanta.MAINMENU, update, messagesRepository);
+                    execute(adminService.sendAdminPanel(update));
                     break;
             }
 
