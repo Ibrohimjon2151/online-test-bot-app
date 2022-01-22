@@ -2,6 +2,7 @@ package com.example.onlinetestbotapp.bot.BotService;
 
 import com.example.onlinetestbotapp.bot.ServiceInterface.SendServiceMessage;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class SendServiceMessageImp implements SendServiceMessage {
 
     /**
@@ -136,13 +137,14 @@ public class SendServiceMessageImp implements SendServiceMessage {
 
     public static InlineKeyboardMarkup makeInlineKeyboardButtonOnerow(String[] array) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
+            List<List<InlineKeyboardButton>> rowlist = new ArrayList<>();
         for (int i = 0; i < array.length; i++) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText(array[i]);
             inlineKeyboardButton.setCallbackData(array[i]);
             row.add(inlineKeyboardButton);
+            rowlist.add(row);
         }
         inlineKeyboardMarkup.setKeyboard(rowlist);
         return inlineKeyboardMarkup;

@@ -1,13 +1,17 @@
 package com.example.onlinetestbotapp;
 
+import com.example.onlinetestbotapp.DBconfig.DBservice.MessageService;
 import com.example.onlinetestbotapp.DBconfig.DBservice.UserService;
 import com.example.onlinetestbotapp.DBconfig.entity.Admin;
 import com.example.onlinetestbotapp.DBconfig.repository.AdminRepository;
+import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.UserRepository;
 import com.example.onlinetestbotapp.bot.BotService.AdminServiceImpl;
 import com.example.onlinetestbotapp.bot.BotService.SendServiceMessageImp;
+import com.example.onlinetestbotapp.bot.constants.AdminConstanta;
 import com.example.onlinetestbotapp.bot.constants.AdminState;
 import com.example.onlinetestbotapp.bot.constants.BotState;
+import com.example.onlinetestbotapp.bot.constants.MessageConstanta;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +35,13 @@ public class BotService extends TelegramLongPollingBot {
     AdminRepository adminRepository;
 
     @Autowired
+    MessagesRepository messagesRepository;
+
+    @Autowired
     AdminServiceImpl adminService;
+
+    @Autowired
+    MessageService messageService;
 
     @SneakyThrows
     @Override
@@ -39,6 +49,33 @@ public class BotService extends TelegramLongPollingBot {
 
 
         if (update.hasCallbackQuery()) {
+            /**
+             *  CALLBACKQUERYGA STATE BO'YICHA JAVOB QAYTARISH
+             */
+            String data = update.getCallbackQuery().getData();
+            String stateAdmin = adminRepository.findByChatId(update.getCallbackQuery().getMessage().getChatId()).get().getState();
+            switch (stateAdmin) {
+                case AdminState.ADMINPANEL:
+                    switch (data) {
+                        case AdminConstanta.ADDNEWMESSAGE:
+                            userService.updateStateAdmin(update, AdminState.ADDNEWMESSAGE, adminRepository);
+                            execute(sendServiceMessageImp.deleteMessage(update));
+                            execute(adminService.sendMessageStatus(update));
+                            break;
+                    }
+                    break;
+                case AdminState.ADDNEWMESSAGE:
+                    switch (data) {
+                        case AdminConstanta.STATUSMENU:
+                            userService.updateStateAdmin(update, AdminState.CHANGEMENUSTATUS, adminRepository);
+                            execute(sendServiceMessageImp.deleteMessage(update));
+                            execute(adminService.changeMenuMessage(update, messagesRepository));
+                            execute(adminService.sendCommandNewMessage(update));
+                            break;
+                    }
+                    break;
+            }
+
 
         } else if (update.getMessage().hasContact()) {
             userService.saveUserWithContactPhoneNumber(update, BotState.MENU, userRepository);
@@ -88,8 +125,11 @@ public class BotService extends TelegramLongPollingBot {
             switch (stateAdmin) {
                 case AdminState.ENTERADMIN:
                     execute(sendServiceMessageImp.deleteMessage(update));
-                    userService.updateStateAdmin(update , AdminState.ADMINPANEL, adminRepository);
+                    userService.updateStateAdmin(update, AdminState.ADMINPANEL, adminRepository);
                     execute(adminService.sendAdminPanel(update));
+                    break;
+                case AdminState.CHANGEMENUSTATUS:
+                        messageService.saveNewMessage(MessageConstanta.MAINMENU,update , messagesRepository);
                     break;
             }
 

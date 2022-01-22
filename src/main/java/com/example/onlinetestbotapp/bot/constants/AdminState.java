@@ -5,4 +5,8 @@ public interface AdminState {
 
 
     String ADMINPANEL = "ADMIN PANEL";
+    String ADDNEWMESSAGE = "yangi haabr qo'shish degan joyi";
+
+
+    String CHANGEMENUSTATUS = "CHANGE STATUS MENU";
 }
