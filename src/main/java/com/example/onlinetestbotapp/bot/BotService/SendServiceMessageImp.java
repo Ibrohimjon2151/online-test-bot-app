@@ -1,9 +1,10 @@
 package com.example.onlinetestbotapp.bot.BotService;
 
+import com.example.onlinetestbotapp.DBconfig.entity.Messages;
 import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.bot.ServiceInterface.SendServiceMessage;
+import com.example.onlinetestbotapp.bot.constants.MessageConstanta;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -16,12 +17,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SendServiceMessageImp implements SendServiceMessage {
 
-    @Autowired
-    MessagesRepository messagesRepository;
 
     /**
      * BOTGA KIRGANDA ISHLAYDI
@@ -104,7 +104,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
      * @return
      */
     @Override
-    public SendMessage sendMenuPage(Update update) {
+    public SendMessage sendMenuPage(Update update ,MessagesRepository messagesRepository) {
         SendMessage sendMessage = new SendMessage();
         if (update.hasCallbackQuery()) {
             sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
@@ -112,8 +112,9 @@ public class SendServiceMessageImp implements SendServiceMessage {
             sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         }
 
-//        messagesRepository.findByTitleAndStatus()
-//        sendMessage.setText();
+        Optional<Messages> optionalMessages2 = messagesRepository.findByTitle(MessageConstanta.MAINMENU);
+        Optional<Messages> optionalMessages = messagesRepository.findByTitleAndStatus(MessageConstanta.MAINMENU, true);
+        sendMessage.setText(optionalMessages.get().getText());
         return sendMessage;
     }
 

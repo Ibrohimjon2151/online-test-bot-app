@@ -16,8 +16,10 @@ import javax.persistence.Entity;
 public class Messages extends AbsEntityId {
     private String title;
 
-    private String description;
+    private String text;
 
     boolean status = false;
+
+    boolean inlineStatus = false;
 
 }

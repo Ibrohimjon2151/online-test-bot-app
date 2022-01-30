@@ -24,7 +24,7 @@ public class DataLoader implements CommandLineRunner {
                     "admin",
                     "+998911082151",
                     1236905987L,
-                    "Faqat Oldinga"
+                    "123"
             ));
 
         }

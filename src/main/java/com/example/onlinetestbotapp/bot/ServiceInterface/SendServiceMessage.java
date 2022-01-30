@@ -1,5 +1,6 @@
 package com.example.onlinetestbotapp.bot.ServiceInterface;
 
+import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.SetChatPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -10,7 +11,7 @@ public interface SendServiceMessage {
 
     SendMessage sendGetPhoneNumberPage(Update update);
 
-    SendMessage sendMenuPage(Update update);
+    SendMessage sendMenuPage(Update update , MessagesRepository messagesRepository);
 
     DeleteMessage deleteMessage(Update update);
 }

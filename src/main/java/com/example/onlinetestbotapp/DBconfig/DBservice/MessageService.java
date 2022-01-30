@@ -14,12 +14,12 @@ public class MessageService {
         Optional<Messages> optionalMessages = messagesRepository.findByTitle(mainmenu);
         if (optionalMessages.isPresent()) {
             Messages messages = optionalMessages.get();
-            messages.setDescription(update.getMessage().getText());
+            messages.setText(update.getMessage().getText());
             messagesRepository.save(messages);
         }else {
             Messages messages = new Messages();
             messages.setTitle(mainmenu);
-            messages.setDescription(update.getMessage().getText());
+            messages.setText(update.getMessage().getText());
             messages.setStatus(true);
             messagesRepository.save(messages);
         }

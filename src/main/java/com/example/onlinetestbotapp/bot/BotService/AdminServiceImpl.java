@@ -57,7 +57,7 @@ public class AdminServiceImpl implements AdminService {
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         Optional<Messages> optionalMessages = messagesRepository.findByTitle(MessageConstanta.MAINMENU);
         if (optionalMessages.isPresent()) {
-            sendMessage.setText("Xozirgi Asosiy menudagi habar \n"+optionalMessages.get().getDescription());
+            sendMessage.setText("Xozirgi Asosiy menudagi habar \n"+optionalMessages.get().getText());
         }else {
             sendMessage.setText("Userlarga ko'rinuvchi asosiy menudagi yangi habarni jo'nating");
         }

@@ -43,6 +43,7 @@ public class BotService extends TelegramLongPollingBot {
     @Autowired
     MessageService messageService;
 
+
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
@@ -79,7 +80,8 @@ public class BotService extends TelegramLongPollingBot {
 
         } else if (update.getMessage().hasContact()) {
             userService.saveUserWithContactPhoneNumber(update, BotState.MENU, userRepository);
-            execute(sendServiceMessageImp.sendMenuPage(update));
+            execute(sendServiceMessageImp.sendMenuPage(update, messagesRepository));
+            return;
         } else if (update.hasMessage()) {
             if (update.getMessage().getText().equals("/start")) {
                 boolean exists = userRepository.existsByChatId(update.getMessage().getChatId());
@@ -89,7 +91,8 @@ public class BotService extends TelegramLongPollingBot {
                     return;
                 } else {
                     userService.updateState(update, BotState.MENU, userRepository);
-                    execute(sendServiceMessageImp.sendMenuPage(update));
+                    execute(sendServiceMessageImp.sendMenuPage(update, messagesRepository));
+                    return;
                 }
             }
 
@@ -97,7 +100,7 @@ public class BotService extends TelegramLongPollingBot {
             String state = userRepository.findByChatId(chatId).get().getState();
             /**
              *
-             * USER UCHUN STATE BO'YICHA HABAR CHO'NATISH
+             * USER UCHUN STATE BO'YICHA HABAR JO'NATISH
              */
             switch (state) {
                 case BotState.START:
@@ -106,7 +109,7 @@ public class BotService extends TelegramLongPollingBot {
                     break;
                 case BotState.GETPHONENUMBER:
                     userService.saveUserOfPhoneNumber(update, BotState.MENU, userRepository);
-                    execute(sendServiceMessageImp.sendMenuPage(update));
+                    execute(sendServiceMessageImp.sendMenuPage(update, messagesRepository));
                     break;
             }
 
