@@ -4,7 +4,6 @@ import com.example.onlinetestbotapp.DBconfig.entity.Messages;
 import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.bot.ServiceInterface.SendServiceMessage;
 import com.example.onlinetestbotapp.bot.constants.MessageConstanta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -111,8 +110,6 @@ public class SendServiceMessageImp implements SendServiceMessage {
         } else {
             sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         }
-
-        Optional<Messages> optionalMessages2 = messagesRepository.findByTitle(MessageConstanta.MAINMENU);
         Optional<Messages> optionalMessages = messagesRepository.findByTitleAndStatus(MessageConstanta.MAINMENU, true);
         sendMessage.setText(optionalMessages.get().getText());
         return sendMessage;
@@ -177,7 +174,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
         return deleteMessage;
     }
 
-    private static List<InlineKeyboardButton> getInlineKeyboardButtons(String[] array, List<InlineKeyboardButton> row, List<List<InlineKeyboardButton>> rowlist, int i) {
+    private static   List<InlineKeyboardButton> getInlineKeyboardButtons(String[] array, List<InlineKeyboardButton> row, List<List<InlineKeyboardButton>> rowlist, int i) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
         inlineKeyboardButton.setText(array[i]);

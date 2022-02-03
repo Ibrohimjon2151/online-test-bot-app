@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
@@ -65,12 +66,15 @@ public class BotService extends TelegramLongPollingBot {
                             break;
                     }
                     break;
+
                 case AdminState.ADDNEWMESSAGE:
                     switch (data) {
                         case AdminConstanta.STATUSMENU:
                             userService.updateStateAdmin(update, AdminState.CHANGEMENUSTATUS, adminRepository);
                             execute(sendServiceMessageImp.deleteMessage(update));
-                            execute(adminService.changeMenuMessage(update, messagesRepository));
+                            for (SendMessage sendMessage : adminService.changeMenuMessage(update, messagesRepository)) {
+                                execute(sendMessage);
+                            }
                             execute(adminService.sendCommandNewMessage(update));
                             break;
                     }
@@ -116,7 +120,7 @@ public class BotService extends TelegramLongPollingBot {
 
             /**
              *
-             * ADMIN UCHUN STATE BO'YICHA HABAR CHO'NATISH
+             * ADMIN UCHUN STATE BO'YICHA HABAR JO'NATISH
              */
             for (Admin admin : adminRepository.findAll()) {
                 if (admin.getPassword().equals(update.getMessage().getText())) {
@@ -132,6 +136,7 @@ public class BotService extends TelegramLongPollingBot {
                     execute(adminService.sendAdminPanel(update));
                     break;
                 case AdminState.CHANGEMENUSTATUS:
+                    userService.updateStateAdmin(update, AdminState.ADMINPANEL, adminRepository);
                     messageService.saveNewMessage(MessageConstanta.MAINMENU, update, messagesRepository);
                     execute(adminService.sendAdminPanel(update));
                     break;

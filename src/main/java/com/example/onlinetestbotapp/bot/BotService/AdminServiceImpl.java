@@ -12,7 +12,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -52,16 +53,25 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public SendMessage changeMenuMessage(Update update, MessagesRepository messagesRepository) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-        Optional<Messages> optionalMessages = messagesRepository.findByTitle(MessageConstanta.MAINMENU);
-        if (optionalMessages.isPresent()) {
-            sendMessage.setText("Xozirgi Asosiy menudagi habar \n"+optionalMessages.get().getText());
-        }else {
-            sendMessage.setText("Userlarga ko'rinuvchi asosiy menudagi yangi habarni jo'nating");
+    public List<SendMessage> changeMenuMessage(Update update, MessagesRepository messagesRepository) {
+        List<SendMessage> sendMessageList = new ArrayList<>();
+        List<Messages> allByTitle = messagesRepository.findAllByTitle(MessageConstanta.MAINMENU);
+
+        for (Messages messages : allByTitle) {
+            SendMessage sendMessage = new SendMessage();
+            if (update.hasCallbackQuery()) {
+                sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+            } else {
+                sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+            }
+            sendMessage.setText(messages.getText());
+            String list [] = {MessageConstanta.DOACTIVE , MessageConstanta.DELETEMESSAGE};
+            InlineKeyboardMarkup inlineKeyboardMarkup = SendServiceMessageImp.makeInlineKeyboardButton(list);
+            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+            sendMessageList.add(sendMessage);
         }
-        return sendMessage;
+
+        return sendMessageList;
     }
 
     @Override
