@@ -4,7 +4,6 @@ import com.example.onlinetestbotapp.DBconfig.entity.Messages;
 import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.bot.ServiceInterface.AdminService;
 import com.example.onlinetestbotapp.bot.constants.AdminConstanta;
-import com.example.onlinetestbotapp.bot.constants.BotState;
 import com.example.onlinetestbotapp.bot.constants.MenuConstants;
 import com.example.onlinetestbotapp.bot.constants.MessageConstanta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +31,7 @@ public class AdminServiceImpl implements AdminService {
             sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         }
         sendMessage.setText("Assalomu alaykum admin paneliga hush kelibsiz quydagilardan birini tanlashingiz mumkin\uD83D\uDC47");
-        String[] listMenu = {AdminConstanta.ADDNEWMESSAGE, AdminConstanta.VIEWCURRENTMESSAGES, AdminConstanta.ADDNEWADMIN, AdminConstanta.VIEWUSERSINFORMATION, MenuConstants.BACK};
+        String[] listMenu = {AdminConstanta.ADDNEWMESSAGE, AdminConstanta.VIEWCURRENTMESSAGES,AdminConstanta.ADDNEWQUESTION, MenuConstants.BACK};
         InlineKeyboardMarkup inlineKeyboardMarkup = SendServiceMessageImp.makeInlineKeyboardButtonOnerow(listMenu);
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
         return sendMessage;
@@ -64,7 +64,7 @@ public class AdminServiceImpl implements AdminService {
         } else {
             sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         }
-        String [] list = {MenuConstants.BACK};
+        String[] list = {MenuConstants.BACK};
         InlineKeyboardMarkup inlineKeyboardMarkup = SendServiceMessageImp.makeInlineKeyboardButton(list);
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
         sendMessage.setText(optionalMessages.get().getText());
@@ -78,6 +78,26 @@ public class AdminServiceImpl implements AdminService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         sendMessage.setText("Yangi habarni jo'nating\uD83D\uDC47\uD83D\uDC47");
+        return sendMessage;
+    }
+
+    @Override
+    public SendMessage sendViewMessages(Update update, Messages messages) {
+        SendMessage sendMessage = new SendMessage();
+        if (update.hasCallbackQuery()) {
+            sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+        } else {
+            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+        }
+        sendMessage.enableHtml(true);
+        String stringBuilder = "<b>" + messages.getTitle() + "</b>" + "\n\n" +
+                messages.getText();
+
+        String[] list = {MenuConstants.BACK};
+        InlineKeyboardMarkup inlineKeyboardMarkup = SendServiceMessageImp.makeInlineKeyboardButton(list);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+
+        sendMessage.setText(String.valueOf(stringBuilder));
         return sendMessage;
     }
 }

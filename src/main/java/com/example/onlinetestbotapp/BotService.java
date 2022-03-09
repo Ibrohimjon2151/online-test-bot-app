@@ -3,6 +3,7 @@ package com.example.onlinetestbotapp;
 import com.example.onlinetestbotapp.DBconfig.DBservice.MessageService;
 import com.example.onlinetestbotapp.DBconfig.DBservice.UserService;
 import com.example.onlinetestbotapp.DBconfig.entity.Admin;
+import com.example.onlinetestbotapp.DBconfig.entity.Messages;
 import com.example.onlinetestbotapp.DBconfig.repository.AdminRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.UserRepository;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.List;
 
 
 @Component
@@ -61,6 +64,17 @@ public class BotService extends TelegramLongPollingBot {
                             userService.updateStateAdmin(update, AdminState.ADDNEWMESSAGE, adminRepository);
                             execute(sendServiceMessageImp.deleteMessage(update));
                             execute(adminService.sendMessageStatus(update));
+                            break;
+                        case AdminConstanta.VIEWCURRENTMESSAGES:
+                            userService.updateStateAdmin(update, AdminState.ADDNEWMESSAGE, adminRepository);
+                            execute(sendServiceMessageImp.deleteMessage(update));
+                            List<Messages> allByStatusTrue = messagesRepository.findAllByStatusTrue();
+                            for (Messages messages : allByStatusTrue) {
+                                execute(adminService.sendViewMessages(update, messages));
+                            }
+                            break;
+                        case AdminConstanta.ADDNEWQUESTION:
+
                             break;
                         case MenuConstants.BACK:
                             userService.updateState(update, BotState.MENU, userRepository);

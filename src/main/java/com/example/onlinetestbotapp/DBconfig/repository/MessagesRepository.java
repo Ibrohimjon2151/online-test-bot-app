@@ -13,5 +13,5 @@ public interface MessagesRepository extends JpaRepository<Messages, Integer> {
 
     Optional<Messages> findByTitleAndStatus(String title, boolean status);
 
-        List<Messages> findAllByTitle(String title);
+        List<Messages> findAllByStatusTrue();
 }
