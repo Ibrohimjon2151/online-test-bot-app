@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -103,8 +104,11 @@ public class SendServiceMessageImp implements SendServiceMessage {
      * @return
      */
     @Override
-    public SendMessage sendMenuPage(Update update ,MessagesRepository messagesRepository) {
+    public SendMessage sendMenuPage(Update update, MessagesRepository messagesRepository) {
         SendMessage sendMessage = new SendMessage();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        replyKeyboardRemove.setRemoveKeyboard(true);
+        sendMessage.setReplyMarkup(replyKeyboardRemove);
         if (update.hasCallbackQuery()) {
             sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         } else {
@@ -174,7 +178,7 @@ public class SendServiceMessageImp implements SendServiceMessage {
         return deleteMessage;
     }
 
-    private static   List<InlineKeyboardButton> getInlineKeyboardButtons(String[] array, List<InlineKeyboardButton> row, List<List<InlineKeyboardButton>> rowlist, int i) {
+    private static List<InlineKeyboardButton> getInlineKeyboardButtons(String[] array, List<InlineKeyboardButton> row, List<List<InlineKeyboardButton>> rowlist, int i) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
         inlineKeyboardButton.setText(array[i]);

@@ -12,7 +12,7 @@ public interface AdminService {
 
     SendMessage sendMessageStatus(Update update);
 
-    List<SendMessage> changeMenuMessage(Update update, MessagesRepository messagesRepository);
+    SendMessage changeMenuMessage(Update update, MessagesRepository messagesRepository);
 
     SendMessage sendCommandNewMessage(Update update);
 }

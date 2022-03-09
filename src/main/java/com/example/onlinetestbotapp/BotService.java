@@ -8,10 +8,7 @@ import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.DBconfig.repository.UserRepository;
 import com.example.onlinetestbotapp.bot.BotService.AdminServiceImpl;
 import com.example.onlinetestbotapp.bot.BotService.SendServiceMessageImp;
-import com.example.onlinetestbotapp.bot.constants.AdminConstanta;
-import com.example.onlinetestbotapp.bot.constants.AdminState;
-import com.example.onlinetestbotapp.bot.constants.BotState;
-import com.example.onlinetestbotapp.bot.constants.MessageConstanta;
+import com.example.onlinetestbotapp.bot.constants.*;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
 
 @Component
 public class BotService extends TelegramLongPollingBot {
@@ -64,6 +62,11 @@ public class BotService extends TelegramLongPollingBot {
                             execute(sendServiceMessageImp.deleteMessage(update));
                             execute(adminService.sendMessageStatus(update));
                             break;
+                        case MenuConstants.BACK:
+                            userService.updateState(update, BotState.MENU, userRepository);
+                            execute(sendServiceMessageImp.deleteMessage(update));
+                            execute(sendServiceMessageImp.sendMenuPage(update, messagesRepository));
+                            break;
                     }
                     break;
 
@@ -72,10 +75,24 @@ public class BotService extends TelegramLongPollingBot {
                         case AdminConstanta.STATUSMENU:
                             userService.updateStateAdmin(update, AdminState.CHANGEMENUSTATUS, adminRepository);
                             execute(sendServiceMessageImp.deleteMessage(update));
-                            for (SendMessage sendMessage : adminService.changeMenuMessage(update, messagesRepository)) {
-                                execute(sendMessage);
-                            }
+                            SendMessage sendMessage = adminService.changeMenuMessage(update, messagesRepository);
+                            execute(sendMessage);
                             execute(adminService.sendCommandNewMessage(update));
+                            break;
+                        case MenuConstants.BACK:
+                            userService.updateStateAdmin(update, AdminState.ADMINPANEL, adminRepository);
+                            execute(sendServiceMessageImp.deleteMessage(update));
+                            execute(adminService.sendAdminPanel(update));
+                            break;
+                    }
+                    break;
+
+                case AdminState.CHANGEMENUSTATUS:
+                    switch (data) {
+                        case MenuConstants.BACK:
+                            userService.updateStateAdmin(update, AdminState.ADDNEWMESSAGE, adminRepository);
+                            execute(sendServiceMessageImp.deleteMessage(update));
+                            execute(adminService.sendMessageStatus(update));
                             break;
                     }
                     break;
@@ -84,6 +101,7 @@ public class BotService extends TelegramLongPollingBot {
 
         } else if (update.getMessage().hasContact()) {
             userService.saveUserWithContactPhoneNumber(update, BotState.MENU, userRepository);
+
             execute(sendServiceMessageImp.sendMenuPage(update, messagesRepository));
             return;
         } else if (update.hasMessage()) {

@@ -4,6 +4,7 @@ import com.example.onlinetestbotapp.DBconfig.entity.Messages;
 import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import com.example.onlinetestbotapp.bot.ServiceInterface.AdminService;
 import com.example.onlinetestbotapp.bot.constants.AdminConstanta;
+import com.example.onlinetestbotapp.bot.constants.BotState;
 import com.example.onlinetestbotapp.bot.constants.MenuConstants;
 import com.example.onlinetestbotapp.bot.constants.MessageConstanta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -53,25 +54,23 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<SendMessage> changeMenuMessage(Update update, MessagesRepository messagesRepository) {
-        List<SendMessage> sendMessageList = new ArrayList<>();
-        List<Messages> allByTitle = messagesRepository.findAllByTitle(MessageConstanta.MAINMENU);
+    public SendMessage changeMenuMessage(Update update, MessagesRepository messagesRepository) {
 
-        for (Messages messages : allByTitle) {
-            SendMessage sendMessage = new SendMessage();
-            if (update.hasCallbackQuery()) {
-                sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-            } else {
-                sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
-            }
-            sendMessage.setText(messages.getText());
-            String list [] = {MessageConstanta.DOACTIVE , MessageConstanta.DELETEMESSAGE};
-            InlineKeyboardMarkup inlineKeyboardMarkup = SendServiceMessageImp.makeInlineKeyboardButton(list);
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-            sendMessageList.add(sendMessage);
+
+        Optional<Messages> optionalMessages = messagesRepository.findByTitle(MessageConstanta.MAINMENU);
+        SendMessage sendMessage = new SendMessage();
+        if (update.hasCallbackQuery()) {
+            sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+        } else {
+            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         }
+        String [] list = {MenuConstants.BACK};
+        InlineKeyboardMarkup inlineKeyboardMarkup = SendServiceMessageImp.makeInlineKeyboardButton(list);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+        sendMessage.setText(optionalMessages.get().getText());
 
-        return sendMessageList;
+
+        return sendMessage;
     }
 
     @Override
