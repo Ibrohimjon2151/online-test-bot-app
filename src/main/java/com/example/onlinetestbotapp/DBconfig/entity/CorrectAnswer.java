@@ -4,6 +4,7 @@ import com.example.onlinetestbotapp.DBconfig.entity.template.AbsEntityId;
 import lombok.*;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -12,5 +13,8 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CorrectAnswer extends AbsEntityId {
-    private String question;
+    private String answer;
+
+    @OneToOne
+    private Question question;
 }
