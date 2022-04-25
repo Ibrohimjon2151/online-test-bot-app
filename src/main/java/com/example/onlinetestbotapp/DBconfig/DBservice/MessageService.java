@@ -5,8 +5,6 @@ import com.example.onlinetestbotapp.DBconfig.repository.MessagesRepository;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MessageService {
